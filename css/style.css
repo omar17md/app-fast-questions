@@ -1,0 +1,8 @@
+.fondo{
+    background-image: url('../img/fondoPreguntas.jpg');
+    backdrop-filter: blur(3px);
+}
+
+.centrar{
+    text-align: center;
+}

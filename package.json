@@ -1,0 +1,23 @@
+{
+  "name": "app-fast-questions",
+  "version": "1.0.0",
+  "description": "Proyecto final del modulo de JavaScript Avanzado del Bootcamp llamado Profesional Encoding impartido por Dev.F",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omar17md/app-fast-questions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omar17md/app-fast-questions/issues"
+  },
+  "homepage": "https://github.com/omar17md/app-fast-questions#readme",
+  "dependencies": {
+    "node-fetch": "^3.2.10"
+  },
+  "type":"module"
+}
