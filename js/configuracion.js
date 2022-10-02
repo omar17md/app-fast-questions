@@ -1,10 +1,3 @@
-/*********** API TRIVIA DATA BASE ***********/
-/*
--Pagina: https://opentdb.com/
--Documentacion: https://opentdb.com/api_config.php
-.URI DE LA API: https://opentdb.com/api.php
-*/
-
 /*********** ENDPOINTS ***********/
 const URIListaCategorias = 'https://opentdb.com/api_category.php' // Helper API Tools
 
@@ -124,11 +117,22 @@ async function ConsultarCategorias() {
 
 function ComenzarPartida(){
     const numeroPreguntas = document.querySelector('#numeroPreguntas');
+    const categoria = document.querySelector('#category');
+    const dificultad = document.querySelector('#difficulty');
+    const tipo = document.querySelector('#type');
     const mensajeNumeroPreguntas = document.querySelector('#mensajeNumeroPreguntas');
 
     if(numeroPreguntas.value != null){
         if(numeroPreguntas.value >= 1 && numeroPreguntas.value <= 50){
-            window.location.href = "../preguntas.HTML";
+            const paramCategoria = categoria.value != "any" ? "&category="+categoria.value : ""
+            const paramDificultad = dificultad.value != "any" ? "&difficulty="+dificultad.value : ""
+            const paramTipo = tipo.value != "any" ? "&type="+tipo.value : ""
+            const parametros = `?amount=${numeroPreguntas.value}`+ paramCategoria + paramDificultad + paramTipo;
+
+            localStorage.setItem("config", parametros);
+            localStorage.setItem("nickname", nickName.value);
+
+            window.location.href = 'preguntas.HTML';
         }else{
             numeroPreguntas.value = "";
             mensajeNumeroPreguntas.style.display = 'block';

@@ -4,9 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
     <title>Fast Questions</title>
 </head>
 <body>
-    <h1>hola</h1>
+    <div class="container-fluid">
+        <div class="row rows-cols-1 d-flex pantalla-principal justify-content-center align-items-center">
+            <div class="col-12 text-start align-self-start">
+                <h4 id="numeroPreguntas"></h4>
+            </div>
+            <div class="col-12 text-center">
+                <h2 id="pregunta"></h2>
+            </div>
+            <div class="col-12 text-end align-self-end">
+                <h1 id="tiempo">20</h1>
+            </div>
+        </div>
+        <div class="row row-cols-2" id="box-opciones">
+        </div>
+        <div id="divModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <pre class="text-puntuacion" id="modalText"></pre>
+            </div>
+        </div>
+    </div>
+    <script src="js/preguntas.js"></script>
 </body>
 </html>
