@@ -129,9 +129,9 @@ function ComenzarPartida(){
             const paramTipo = tipo.value != "any" ? "&type="+tipo.value : ""
             const parametros = `?amount=${numeroPreguntas.value}`+ paramCategoria + paramDificultad + paramTipo;
 
-            localStorage.setItem("config", parametros);
             localStorage.setItem("nickname", nickName.value);
-
+            localStorage.setItem("config", parametros);
+            
             window.location.href = 'preguntas.HTML';
         }else{
             numeroPreguntas.value = "";
