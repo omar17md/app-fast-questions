@@ -5,14 +5,28 @@ const URIListaCategorias = 'https://opentdb.com/api_category.php' // Helper API 
 const boxPantalla = document.querySelector('#boxPantalla');
 const nickName = document.querySelector('#nickName');
 const mensajeNickname = document.querySelector('#mensajeNickName');
+let banSiguiente = false;
 
 
 /*********** Eventos ***********/ 
 document.querySelector('#continuar').addEventListener('click', Continuar)
 
+
+document.addEventListener("keyup", function(event) {
+    if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        if(banSiguiente){
+            ComenzarPartida();
+        }else{
+            Continuar();
+        }
+    }
+});
+
 /*********** Funciones ***********/
 function Continuar() {
     if (nickName.value) {
+        banSiguiente = true;
+        
         LimpiarPantalla();
         AgregarConfiguraciones()
     } else {

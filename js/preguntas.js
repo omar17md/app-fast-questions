@@ -53,6 +53,8 @@ window.addEventListener("unload", function (e) {
     window.location.href = 'index.html';
 });
 
+    
+
 /*********** Funciones ***********/
 async function CargarPagina(){
     let resultado = false
