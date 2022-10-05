@@ -36,25 +36,23 @@ let numeroAleatorios = [];
 
 /*********** Eventos ***********/ 
 document.addEventListener('DOMContentLoaded', () => {
-
     CargarPagina();
-    
 });
 
 span.onclick = function () {
     modal.style.display = "none";
-    window.location.href = 'index.html';
+    window.location.href = '../index.php';
 }
 
 window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
-        window.location.href = 'index.html';
+        window.location.href = '../index.php';
     }
 }
 
 window.addEventListener("unload", function (e) {
-    window.location.href = 'index.html';
+    window.location.href = '../index.php';
 });
 
 
@@ -83,7 +81,7 @@ async function CargarPagina(){
     body.classList.remove("loader-page");
 
     if(!resultado){
-        window.location.href = "index.HTML";
+        window.location.href = '../index.php';
     }
 }
 

@@ -47,7 +47,7 @@ async function AgregarConfiguraciones() {
     AgregarEstructura()
 
     if (await ConsultarCategorias() == false) {
-        location.reload()
+        window.location.href = '../index.php';
     }
 }
 
@@ -58,7 +58,7 @@ function AgregarEstructura() {
         `
             <h2 class="text-center">Hola ${nickName.value}, para comenzar elige la configuracion para la partida</h2>
             <div class="form-floating text-dark">
-                <input type="number" class="form-control" id="numeroPreguntas" placeholder="" min="1" max="50" maxlength="2"
+                <input type="text" class="form-control" id="numeroPreguntas" placeholder="" maxlength="2"
                 onkeypress="return valideKey(event);">
                 <label for="forYear">Ingresa el numero de preguntas a responder (Maximo 50 preguntas por partida)</label>
                 <h5 for="forRequired" id="mensajeNumeroPreguntas" class="text-danger" style="display: none;">El numero de preguntas debe ser minimo 1 y maximo 50</h5>
@@ -155,7 +155,7 @@ async function ComenzarPartida(){
                 localStorage.setItem("nickname", nickName.value);
                 localStorage.setItem("config", parametros);
             
-                window.location.href = 'preguntas.HTML';
+                window.location.href = '../preguntas.php';
             }else{
                 let mensajeConfiguracion = document.querySelector('#mensajeConfiguracion');
 
