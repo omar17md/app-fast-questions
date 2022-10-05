@@ -1,5 +1,6 @@
 /*********** ENDPOINTS ***********/
-const URIListaCategorias = 'https://opentdb.com/api_category.php' // Helper API Tools
+const URIListaCategorias = 'https://opentdb.com/api_category.php'; // Helper API Tools
+const URIapi = 'https://opentdb.com/api.php';
 
 /*********** Declaracion de variables ***********/
 const boxPantalla = document.querySelector('#boxPantalla');
@@ -23,10 +24,12 @@ document.addEventListener("keyup", function(event) {
 });
 
 /*********** Funciones ***********/
+nickName.focus();
+
 function Continuar() {
     if (nickName.value) {
         banSiguiente = true;
-        
+
         LimpiarPantalla();
         AgregarConfiguraciones()
     } else {
@@ -94,6 +97,7 @@ function AgregarEstructura() {
     col2.innerHTML =
         `
             <button type="button" class="btn btn-success" id="comenzar">Continuar</button>
+            <h5 for="forRequired" id="mensajeConfiguracion" class="text-danger" style="display: none;">No existen preguntas para la configuracion de partida seleccionada, por favor intente otra</h5>
         `;
 
     boxPantalla.appendChild(col2);
@@ -101,6 +105,9 @@ function AgregarEstructura() {
     const btnComenzar = document.querySelector('#comenzar');
 
     btnComenzar.addEventListener('click', ComenzarPartida)
+
+    const numeroPreguntas = document.querySelector('#numeroPreguntas');
+    numeroPreguntas.focus();
 }
 
 async function ConsultarCategorias() {
@@ -129,7 +136,7 @@ async function ConsultarCategorias() {
     return resultado
 }
 
-function ComenzarPartida(){
+async function ComenzarPartida(){
     const numeroPreguntas = document.querySelector('#numeroPreguntas');
     const categoria = document.querySelector('#category');
     const dificultad = document.querySelector('#difficulty');
@@ -143,10 +150,17 @@ function ComenzarPartida(){
             const paramTipo = tipo.value != "any" ? "&type="+tipo.value : ""
             const parametros = `?amount=${numeroPreguntas.value}`+ paramCategoria + paramDificultad + paramTipo;
 
-            localStorage.setItem("nickname", nickName.value);
-            localStorage.setItem("config", parametros);
+            if(await VerificarConfiguracion(parametros)){
+                localStorage.setItem("nickname", nickName.value);
+                localStorage.setItem("config", parametros);
             
-            window.location.href = 'preguntas.HTML';
+                window.location.href = 'preguntas.HTML';
+            }else{
+                let mensajeConfiguracion = document.querySelector('#mensajeConfiguracion');
+
+                mensajeConfiguracion.style.display = 'block';
+            }
+            
         }else{
             numeroPreguntas.value = "";
             mensajeNumeroPreguntas.style.display = 'block';
@@ -155,4 +169,24 @@ function ComenzarPartida(){
     else{
         mensajeNumeroPreguntas.style.display = 'block';
     }
+}
+
+async function VerificarConfiguracion(parametros){
+    let resultado = false;
+    
+    await fetch(URIapi + parametros)
+    .then(async (response) => {
+        if(response.status === 200){
+            resultado = await response.json().then(data => data['response_code']) == 0 ? true : false;
+        }else{
+            resultado = false;
+            alert(`Hubo un problema al verificar la informacion en la API\nStatus Code: ${response.status}\nMensaje de Erro: ${response.statusText}`)
+        }
+    })
+    .catch(error => {
+        resultado = false;
+        alert(`Hubo un problema al verificar la informacion en la API\nError: ${error.message}`)
+    })
+
+    return resultado;
 }

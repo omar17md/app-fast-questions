@@ -24,17 +24,21 @@ let indicePregunta = 0;
 let listaPreguntas = [];
 let respuesta = 0;
 let puntuacion = 0;
-let segundos = 21;
+let segundos = 31;
 let timerId = 0;
 let tipoPregunta = "";
+let banSinResultados = false;
 let nickname = localStorage.getItem('nickname');
+const config = localStorage.getItem('config');
 let jugador = localStorage.getItem(nickname) === null ? {} : JSON.parse(localStorage.getItem(nickname)) ;
 let numeroAleatorios = [];
 
 
 /*********** Eventos ***********/ 
 document.addEventListener('DOMContentLoaded', () => {
+
     CargarPagina();
+    
 });
 
 span.onclick = function () {
@@ -53,18 +57,30 @@ window.addEventListener("unload", function (e) {
     window.location.href = 'index.html';
 });
 
-    
+
 
 /*********** Funciones ***********/
 async function CargarPagina(){
     let resultado = false
+    let body = document.querySelector('#bodypagina');
 
     if(await GenerarToken()){
         if(await GenerarPreguntas()){
             MostarPregunta();
             resultado = true;
+        }else{
+            if(banSinResultados){
+                if(await GenerarToken()){
+                    if(await GenerarPreguntas()){
+                        MostarPregunta();
+                        resultado = true;
+                    }
+                }
+            }
         }
     }
+
+    body.classList.remove("loader-page");
 
     if(!resultado){
         window.location.href = "index.HTML";
@@ -87,9 +103,8 @@ function temporizador(){
 
 async function GenerarToken(){
     let resultado = true;
-    let banToken = jugador.token === undefined ? true : await ValidaToken();
 
-    if(banToken){
+    if(jugador.token === undefined ){
         await fetch(URIToken)
         .then(async (response) => {
             if(response.status === 200){           
@@ -105,40 +120,28 @@ async function GenerarToken(){
             alert(`Hubo un problema al generar el token para la API\nError: ${error.message}`)
         })
     }else{
-        token = jugador.token;
+       token = jugador.token;
     }
 
     return resultado
 }
 
-async function ValidaToken(){
-    let resultado = true;
-
-    await fetch(URIapi + "?amount=1" + `&token=${jugador.token}`)
-    .then(async (response) => {
-        if(response.status === 200){
-            resultado = await response.json().then(data => data['response_code']) == 0 ? false : true;
-        }else{
-            resultado = false;
-            alert(`Hubo un problema al validar token de la API\nStatus Code: ${response.status}\nMensaje de Erro: ${response.statusText}`)
-        }
-    })
-    .catch(error => {
-        resultado = false;
-        alert(`Hubo un problema al validar token de la API\nError: ${error.message}`)
-    })
-
-    return resultado
-}
 
  async function GenerarPreguntas(){
     let resultado = true;
-    const config = localStorage.getItem('config');
 
     await fetch(URIapi + config + `&token=${token}`)
     .then(async (response) => {
         if(response.status === 200){
-            listaPreguntas = await response.json().then(data => data['results'])
+            let data = await response.json();
+
+            if(data['response_code'] == 0){
+                listaPreguntas = data['results'];
+            }else{
+                jugador.token = undefined;
+                banSinResultados = true;
+                resultado = false;
+            }
         }else{
             resultado = false;
             alert(`Hubo un problema al obtener las preguntas de la API\nStatus Code: ${response.status}\nMensaje de Erro: ${response.statusText}`)
@@ -153,8 +156,8 @@ async function ValidaToken(){
 }
 
 function MostarPregunta(){
-    segundos = 21;
-    tiempo.innerHTML = "20";
+    segundos = 31;
+    tiempo.innerHTML = "30";
     tiempo.style.color = "#000";
     timerId = setInterval(temporizador, 1000);
 
@@ -198,7 +201,6 @@ function MostarPregunta(){
             respuesta = 1;
         }   
     }
-    console.log(listaPreguntas[indicePregunta].correct_answer);
 
     indicePregunta++;
 }
@@ -263,7 +265,7 @@ function ValidarRespuesta(msj){
     MostrarRespuesta();
     clearInterval(timerId);
     if(respuesta == opcionElegida){
-        puntuacion += 100;
+        puntuacion += (1000 * (segundos/100));
     }
 
     if(indicePregunta < listaPreguntas.length){
@@ -273,7 +275,9 @@ function ValidarRespuesta(msj){
             if(puntuacion > jugador.record){
                 textModal.innerHTML = `NUEVO RECORD\n\nPuntuacion: ${puntuacion}\n\nRECORD ANTERIOR: ${jugador.record}`;
 
-                localStorage.setItem(nickname, puntuacion);
+                jugador.record = puntuacion;
+
+                localStorage.setItem(nickname, JSON.stringify(jugador));
             }else{
                 textModal.innerHTML = `Puntuacion: ${puntuacion}\n\nRECORD ANTERIOR: ${jugador.record}`;
             }
